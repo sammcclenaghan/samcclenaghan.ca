@@ -22,3 +22,8 @@ export const PROJECTS = {
   TITLE: "Projects",
   DESCRIPTION: "A selection of recent and notable projects showcasing tools and technologies I use.",
 };
+
+export const SITE = {
+  NAME: "Sam McClenaghan",
+  EMAIL: "sam@aream.ca",
+};
