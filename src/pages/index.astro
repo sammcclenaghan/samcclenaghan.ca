@@ -1,11 +1,141 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "@layouts/Layout.astro";
+import Link from "@components/Link.astro";
+import Container from "@components/Container.astro";
+import { getCollection, render } from "astro:content";
+import ArrowCard from "@components/ArrowCard.astro";
+import EmailActions from "@components/EmailActions";
+import { SOCIALS } from "@consts";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const projects = await getCollection("projects");
+const work = await getCollection("work");
+
+const workWithContent = await Promise.all(
+  work.map(async (entry) => {
+    const { Content, headings } = await render(entry);
+    return { entry, Content, headings };
+  })
+);
 ---
 
 <Layout>
-	<Welcome />
+    <Container>
+        <h4 class="animate font-semibold text-black dark:text-white">
+            Hi, I'm Sam<span class="text-xl">👋🏻</span>
+        </h4>
+
+        <div class="space-y-4">
+            <p class="animate">
+                I am a minimal, seo friendly, accessible portfolio and blog for
+                developers. I am an even more lightweight version of my popular
+                theme
+                <Link
+                    href="https://github.com/markhorn-dev/astro-sphere"
+                    aria-label="Astro Sphere on Github"
+                    external
+                >
+                    Astro Sphere
+                </Link>
+                . I have a lighthouse scores of 100 across the board for performance,
+                accesibility, best practices and SEO.
+            </p>
+
+            <p class="animate">
+                I come packed with full type safety, a sitemap, an rss feed,
+                markdown and mdx support (use components in your markdown)
+                through astro integrations. I am styled with tailwind and come
+                preconfigured with light, dark and system/os theme preferences
+                out of the box.
+            </p>
+
+            <p class="animate">
+                Visit
+                <Link
+                    href="https://github.com/markhorn-dev/astro-nano"
+                    aria-label="Astro Nano on Github"
+                    external
+                >
+                    Astro Nano on Github
+                </Link>
+                to fork the repository, read the docs or one-click deploy on Vercel
+                or Netlify.
+            </p>
+
+            <div
+                class="animate flex flex-wrap gap-y-2 items-center justify-between pt-12"
+            >
+                <h5 class="font-semibold text-black dark:text-white">
+                    Work Experience
+                </h5>
+                <Link href="/projects"> See all work</Link>
+            </div>
+
+            <ul class="flex flex-col space-y-4 animate">
+              {workWithContent.map(({ entry, Content, headings }) => (
+                <li class="animate">
+                  <div class="text-sm opacity-75">
+                    {entry.data.date_start && entry.data.date_end
+                      ? `${entry.data.date_start} - ${entry.data.date_end}`
+                      : entry.data.date_start || entry.data.date_end || ""}
+                  </div>
+                  <div class="font-semibold text-black dark:text-white">
+                    {entry.data.title}
+                  </div>
+                  <div class="text-sm opacity-75">
+                    {entry.data.role}
+                  </div>
+                  <article class="prose prose-sm dark:prose-invert mt-2">
+                    <Content />
+                  </article>
+                </li>
+              ))}
+            </ul>
+
+            <div
+                class="animate flex flex-wrap gap-y-2 items-center justify-between pt-12"
+            >
+                <h5 class="font-semibold text-black dark:text-white">
+                    Recent projects
+                </h5>
+                <Link href="/projects"> See all projects </Link>
+            </div>
+
+            {
+                projects.map((project, index) => (
+                    <div class="animate">
+                        <ArrowCard entry={project} />
+                    </div>
+                ))
+            }
+
+            <div
+                class="animate flex flex-wrap gap-y-2 items-center justify-between pt-12"
+            >
+            <h5 class="font-semibold text-black dark:text-white">
+                Let's Connect
+              </h5>
+                <article>
+                    <p>
+                      If you want to get in touch with me about something or just to say hi,
+                      reach out on social media or send me an email.
+                    </p>
+                </article>
+
+                <ul class="flex flex-wrap gap-2">
+                  {SOCIALS.map(SOCIAL => (
+                    <li class="flex gap-x-2 text-nowrap">
+                      <Link href={SOCIAL.HREF} external aria-label={`Sam on ${SOCIAL.NAME}`}>
+                        {SOCIAL.NAME}
+                      </Link>
+                      {"/"}
+                    </li>
+                  ))}
+                  <li class="overflow-visible">
+                    <EmailActions client:load email="sam@aream.ca" label="Email Sam" />
+                  </li>
+                </ul>
+
+            </div>
+        </div>
+    </Container>
 </Layout>
