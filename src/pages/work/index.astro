@@ -1,0 +1,50 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+// load work entries and pre-render their markdown to get Content components
+const work = (await getCollection("work"))
+  .filter(item => !item.data.draft)
+  .sort((a, b) => (b.data.date_start ?? "").localeCompare(a.data.date_start ?? ""));
+
+const workWithContent = await Promise.all(
+  work.map(async (entry) => {
+    const { Content, headings } = await render(entry);
+    return { entry, Content, headings };
+  })
+);
+---
+
+<Layout>
+  <Container>
+    <div class="space-y-10">
+      <div class="animate font-semibold text-black dark:text-white">
+        Projects
+      </div>
+      <ul class="animate flex flex-col gap-4">
+        {
+          workWithContent.map(({ entry, Content }) => (
+            <li>
+              <div class="text-sm opacity-75">
+                {entry.data.date_start && entry.data.date_end
+                  ? `${entry.data.date_start} - ${entry.data.date_end}`
+                  : entry.data.date_start || entry.data.date_end || ""}
+              </div>
+              <div class="font-semibold text-black dark:text-white">
+                {entry.data.title}
+              </div>
+              <div class="text-sm opacity-75">
+                {entry.data.role}
+              </div>
+              <article class="prose prose-sm dark:prose-invert mt-2">
+                <Content />
+              </article>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Container>
+</Layout>
+
+

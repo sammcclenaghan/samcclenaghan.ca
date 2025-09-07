@@ -70,6 +70,9 @@ export const collections = {
       title: z.string().min(1, "Work entry must have a title"),
       role: z.string().optional(),
       description: z.string().optional(),
+      // Publishing flags
+      draft: z.boolean().optional().default(false),
+      featured: z.boolean().optional().default(false),
       date_start: z.string().optional(),
       date_end: z.string().optional(),
     }),
