@@ -77,4 +77,15 @@ export const collections = {
       date_end: z.string().optional(),
     }),
   }),
+  misc: defineCollection({
+    schema: z.object({
+      title: z.string().min(1, "Misc entry must have a title"),
+      description: z.string().optional(),
+      date: z.string().optional(),
+      image: z.string().optional(),
+      url: z.string().url().optional(), // external link, e.g., PRs or small projects
+      featured: z.boolean().optional().default(false),
+      draft: z.boolean().optional().default(false),
+    }),
+  }),
 };

@@ -1,0 +1,52 @@
+---
+type Props = {
+  href: string;
+  title: string;
+  description?: string;
+  image?: string;
+  date?: string;
+  external?: boolean;
+  // Controls the media preview. If not provided, uses image when available, otherwise text
+  variant?: 'image' | 'text';
+  // One of preset aspect classes to ensure Tailwind picks them up
+  aspect?: '16/9' | '4/3' | '1/1';
+};
+
+const {
+  href,
+  title,
+  description,
+  image,
+  date,
+  external = false,
+  variant,
+  aspect = '16/9',
+} = Astro.props as Props;
+
+const computedVariant = variant ?? (image ? 'image' : 'text');
+const aspectClass = aspect === '4/3' ? 'aspect-[4/3]' : aspect === '1/1' ? 'aspect-square' : 'aspect-[16/9]';
+---
+
+<div class="space-y-2">
+  <div class="font-semibold text-black dark:text-white">{title}</div>
+  <a href={href} target={external ? "_blank" : "_self"} rel={external ? "noopener noreferrer" : undefined} class="group block overflow-hidden rounded-xl border border-black/15 dark:border-white/20 hover:border-black/25 hover:dark:border-white/40 transition-colors duration-300 ease-in-out">
+    {computedVariant === 'image' ? (
+      <div class={`${aspectClass} bg-black/5 dark:bg-white/5 overflow-hidden`}>
+        {image && (
+          <img src={image} alt={title} class="size-full object-cover group-hover:scale-[1.02] transition-transform duration-300 ease-in-out" loading="lazy" />
+        )}
+      </div>
+    ) : (
+      <div class="p-5">
+        <div class="rounded-lg border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 p-5 min-h-52 flex items-start">
+          <p class="text-sm leading-relaxed line-clamp-5">{description}</p>
+        </div>
+      </div>
+    )}
+    <div class="px-4 pb-4">
+      {date && <div class="text-xs opacity-75">{date}</div>}
+    </div>
+  </a>
+</div>
+
+

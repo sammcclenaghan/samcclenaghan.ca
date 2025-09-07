@@ -10,21 +10,8 @@ import "@styles/global.css";
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <script>
-          (function(){
-            try {
-              var t = localStorage.getItem('theme');
-              if (t === 'dark') document.documentElement.classList.add('dark');
-              else if (t === 'light') document.documentElement.classList.remove('dark');
-              else {
-                var prefers = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (prefers) document.documentElement.classList.add('dark');
-              }
-            } catch(e) {}
-          })();
-        </script>
         <meta name="generator" content={Astro.generator} />
-        <title>Astro Basics</title>
+        <title>Sam McClenaghan</title>
     </head>
     <body>
         <div id="top" />

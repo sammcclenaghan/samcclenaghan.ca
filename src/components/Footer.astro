@@ -1,7 +1,6 @@
 ---
 import Container from "@components/Container.astro";
 import { SITE } from "@consts";
-import BackToTop from "@components/BackToTop.astro";
 ---
 
 <footer class="animate">
@@ -10,7 +9,7 @@ import BackToTop from "@components/BackToTop.astro";
     </div>
     <div class="flex justify-between items-center">
       <div>
-        &copy; 2024 {`|`} {SITE.NAME}
+        &copy; 2025 {`|`} {SITE.NAME}
       </div>
       <div class="flex flex-wrap gap-1 items-center">
         <button
@@ -86,8 +85,7 @@ import BackToTop from "@components/BackToTop.astro";
       </div>
     </div>
   </Container>
-
-  <script lang="ts">
+  <script>
     (function () {
       const LS_KEY = 'theme';
       const html = document.documentElement;
@@ -95,43 +93,32 @@ import BackToTop from "@components/BackToTop.astro";
       const btnDark = document.getElementById('dark-theme-button');
       const btnSystem = document.getElementById('system-theme-button');
 
-      const applyTheme = (theme: 'light'|'dark'|'system'): void => {
-        if (theme === 'light') {
-          html.classList.remove('dark');
-        } else if (theme === 'dark') {
-          html.classList.add('dark');
-        } else {
-          // system
-          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (prefersDark) html.classList.add('dark'); else html.classList.remove('dark');
-        }
-        // highlight active button
-        [btnLight, btnDark, btnSystem].forEach(b => b && b.classList.remove('ring-2', 'ring-black/10', 'dark:ring-white/20'));
-        if (theme === 'light' && btnLight) btnLight.classList.add('ring-2','ring-black/10');
-        if (theme === 'dark' && btnDark) btnDark.classList.add('ring-2','ring-black/10','dark:ring-white/20');
-        if (theme === 'system' && btnSystem) btnSystem.classList.add('ring-2','ring-black/10');
-      };
+      const prefersDark = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-      const setTheme = (theme: 'light'|'dark'|'system'): void => {
-        try { localStorage.setItem(LS_KEY, theme); } catch (e) {}
-        applyTheme(theme);
-      };
+      const applyLight = () => { html.classList.remove('dark'); };
+      const applyDark = () => { html.classList.add('dark'); };
+      const applySystem = () => { prefersDark() ? html.classList.add('dark') : html.classList.remove('dark'); };
 
-      // init
-      const stored = (() => { try { return localStorage.getItem(LS_KEY); } catch (e) { return null; }})();
-      const initial = (stored as ('light'|'dark'|'system') | null) || 'system';
-      applyTheme(initial);
+      const setLight = () => { try { localStorage.setItem(LS_KEY, 'light'); } catch (e) {} applyLight(); };
+      const setDark = () => { try { localStorage.setItem(LS_KEY, 'dark'); } catch (e) {} applyDark(); };
+      const setSystem = () => { try { localStorage.setItem(LS_KEY, 'system'); } catch (e) {} applySystem(); };
 
-      btnLight && btnLight.addEventListener('click', () => setTheme('light'));
-      btnDark && btnDark.addEventListener('click', () => setTheme('dark'));
-      btnSystem && btnSystem.addEventListener('click', () => setTheme('system'));
+      let stored = null;
+      try { stored = localStorage.getItem(LS_KEY); } catch (e) {}
+      if (stored === 'light') applyLight();
+      else if (stored === 'dark') applyDark();
+      else applySystem();
 
-      // reflect system changes when 'system' is active
+      btnLight && btnLight.addEventListener('click', setLight);
+      btnDark && btnDark.addEventListener('click', setDark);
+      btnSystem && btnSystem.addEventListener('click', setSystem);
+
       if (window.matchMedia) {
         const mq = window.matchMedia('(prefers-color-scheme: dark)');
         mq.addEventListener && mq.addEventListener('change', () => {
-          const current = (() => { try { return localStorage.getItem(LS_KEY); } catch (e) { return null; }})();
-          if (!current || current === 'system') applyTheme('system');
+          let current = null;
+          try { current = localStorage.getItem(LS_KEY); } catch (e) {}
+          if (!current || current === 'system') applySystem();
         });
       }
     })();

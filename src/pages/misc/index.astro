@@ -1,0 +1,49 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import GalleryCard from "@components/GalleryCard.astro";
+
+const misc = (await getCollection("misc"))
+  .filter((item) => !item.data.draft)
+  .sort((a, b) => (b.data.date ?? "").localeCompare(a.data.date ?? ""))
+  .map((entry) => {
+    const rawBody = (entry as any).body ?? "";
+    const plainBody = typeof rawBody === "string" ? rawBody.replace(/\s+/g, " ").trim() : "";
+    const excerpt = entry.data.description ?? (plainBody ? plainBody.slice(0, 160) + (plainBody.length > 160 ? "…" : "") : "");
+    return { entry, excerpt };
+  });
+---
+
+<Layout>
+  <div class="mx-auto max-w-screen-xl px-5">
+    <div class="space-y-10">
+      <div class="animate font-semibold text-black dark:text-white">My corner…</div>
+      <ul class="animate grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        {
+          misc.map(({ entry, excerpt }) => {
+            const href = entry.data.url || `/${entry.collection}/${entry.slug}`;
+            const external = Boolean(entry.data.url);
+            const variant = entry.data.image ? 'image' : 'text';
+            const aspect = entry.data.featured ? '1/1' : '4/3';
+            return (
+              <li>
+                <GalleryCard
+                  href={href}
+                  external={external}
+                  title={entry.data.title}
+                  description={excerpt}
+                  image={entry.data.image}
+                  date={entry.data.date}
+                  variant={variant}
+                  aspect={aspect}
+                />
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </div>
+</Layout>
+
+

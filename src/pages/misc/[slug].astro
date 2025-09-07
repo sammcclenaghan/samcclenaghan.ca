@@ -1,0 +1,32 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+
+const { slug } = Astro.params;
+if (!slug) throw new Error("Missing slug");
+
+const entry = await getEntry("misc", slug);
+if (!entry) return Astro.redirect("/misc");
+
+// If this misc item is an external link, redirect immediately
+if (entry.data.url) {
+  return Astro.redirect(entry.data.url);
+}
+
+const { Content, headings } = await render(entry);
+---
+
+<Layout>
+  <Container>
+    <div class="space-y-6">
+      <div class="animate font-semibold text-black dark:text-white">{entry.data.title}</div>
+      {entry.data.date && <div class="animate text-sm opacity-75">{entry.data.date}</div>}
+      <article class="animate">
+        <Content />
+      </article>
+    </div>
+  </Container>
+</Layout>
+
+
