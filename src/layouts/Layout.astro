@@ -1,6 +1,7 @@
 ---
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
+import { ClientRouter } from "astro:transitions";
 import "@styles/global.css";
 ---
 
@@ -9,6 +10,46 @@ import "@styles/global.css";
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
+        <ClientRouter />
+    <script>
+      (function(){
+        var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+        function readPref(){
+          try { return localStorage.getItem('theme'); } catch (e) { return null; }
+        }
+        function isDark(){
+          var t = readPref();
+          return t === 'dark' || ((!t || t === 'system') && mq && mq.matches);
+        }
+        function apply(){
+          var css = document.createElement('style');
+          css.textContent = '*{transition:none!important}';
+          document.head.appendChild(css);
+          document.documentElement.classList.toggle('dark', isDark());
+          window.getComputedStyle(css).opacity;
+          document.head.removeChild(css);
+        }
+        apply();
+        // Delegate clicks for any element with data-theme (without relying on .closest)
+        document.addEventListener('click', function(ev){
+          var target = ev.target;
+          if (!(target instanceof Element)) return;
+          var el = target.closest('[data-theme]');
+          if (!el) return;
+          var v = el.getAttribute('data-theme') || 'system';
+          try { localStorage.setItem('theme', v); } catch (e) {}
+          apply();
+        });
+        // React to system changes only when pref is system/unspecified
+        mq && mq.addEventListener && mq.addEventListener('change', function(){
+          var t = readPref(); if (!t || t === 'system') apply();
+        });
+        // Sync across tabs
+        window.addEventListener('storage', function(e){ if (e.key === 'theme') apply(); });
+        // Re-apply after Astro view transitions
+        document.addEventListener('astro:after-swap', apply);
+      })();
+    </script>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
         <title>Sam McClenaghan</title>

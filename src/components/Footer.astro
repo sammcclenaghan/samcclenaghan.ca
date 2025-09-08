@@ -13,7 +13,7 @@ import { SITE } from "@consts";
       </div>
       <div class="flex flex-wrap gap-1 items-center">
         <button
-          id="light-theme-button"
+          data-theme="light"
           aria-label="Light theme"
           class="group size-8 flex items-center justify-center rounded-full"
         >
@@ -41,7 +41,7 @@ import { SITE } from "@consts";
           </svg>
         </button>
         <button
-          id="dark-theme-button"
+          data-theme="dark"
           aria-label="Dark theme"
           class="group size-8 flex items-center justify-center rounded-full"
         >
@@ -61,7 +61,7 @@ import { SITE } from "@consts";
           </svg>
         </button>
         <button
-          id="system-theme-button"
+          data-theme="system"
           aria-label="System theme"
           class="group size-8 flex items-center justify-center rounded-full"
         >
@@ -85,42 +85,5 @@ import { SITE } from "@consts";
       </div>
     </div>
   </Container>
-  <script>
-    (function () {
-      const LS_KEY = 'theme';
-      const html = document.documentElement;
-      const btnLight = document.getElementById('light-theme-button');
-      const btnDark = document.getElementById('dark-theme-button');
-      const btnSystem = document.getElementById('system-theme-button');
-
-      const prefersDark = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-      const applyLight = () => { html.classList.remove('dark'); };
-      const applyDark = () => { html.classList.add('dark'); };
-      const applySystem = () => { prefersDark() ? html.classList.add('dark') : html.classList.remove('dark'); };
-
-      const setLight = () => { try { localStorage.setItem(LS_KEY, 'light'); } catch (e) {} applyLight(); };
-      const setDark = () => { try { localStorage.setItem(LS_KEY, 'dark'); } catch (e) {} applyDark(); };
-      const setSystem = () => { try { localStorage.setItem(LS_KEY, 'system'); } catch (e) {} applySystem(); };
-
-      let stored = null;
-      try { stored = localStorage.getItem(LS_KEY); } catch (e) {}
-      if (stored === 'light') applyLight();
-      else if (stored === 'dark') applyDark();
-      else applySystem();
-
-      btnLight && btnLight.addEventListener('click', setLight);
-      btnDark && btnDark.addEventListener('click', setDark);
-      btnSystem && btnSystem.addEventListener('click', setSystem);
-
-      if (window.matchMedia) {
-        const mq = window.matchMedia('(prefers-color-scheme: dark)');
-        mq.addEventListener && mq.addEventListener('change', () => {
-          let current = null;
-          try { current = localStorage.getItem(LS_KEY); } catch (e) {}
-          if (!current || current === 'system') applySystem();
-        });
-      }
-    })();
-  </script>
+  
 </footer>
