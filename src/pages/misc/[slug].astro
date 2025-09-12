@@ -1,32 +1,52 @@
 ---
-import { getCollection, getEntry, render } from "astro:content";
+import { getCollection, render } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
+import Link from "@components/Link.astro";
 
-const { slug } = Astro.params;
-if (!slug) throw new Error("Missing slug");
-
-const entry = await getEntry("misc", slug);
-if (!entry) return Astro.redirect("/misc");
-
-// If this misc item is an external link, redirect immediately
-if (entry.data.url) {
-  return Astro.redirect(entry.data.url);
+export async function getStaticPaths() {
+    const misc = await getCollection("misc");
+    return misc
+        .filter((item) => !item.data.draft)
+        .map((item) => ({
+            params: { slug: item.slug },
+            props: { entry: item },
+        }));
 }
 
+const { entry } = Astro.props;
+
 const { Content, headings } = await render(entry);
+
+const { title, description, date } = entry.data;
+const pageTitle = `${title} • Misc`;
 ---
 
 <Layout>
-  <Container>
-    <div class="space-y-6">
-      <div class="animate font-semibold text-black dark:text-white">{entry.data.title}</div>
-      {entry.data.date && <div class="animate text-sm opacity-75">{entry.data.date}</div>}
-      <article class="animate">
-        <Content />
-      </article>
-    </div>
-  </Container>
+    <head>
+        <title>{pageTitle}</title>
+        {description && <meta name="description" content={description} />}
+        <meta property="og:title" content={pageTitle} />
+        {
+            description && (
+                <meta property="og:description" content={description} />
+            )
+        }
+    </head>
+    <Container>
+        <div class="space-y-6">
+            <nav class="animate text-sm">
+                <Link href="/misc" aria-label="Back to all misc items"
+                    >← All misc</Link
+                >
+            </nav>
+            <div class="animate font-semibold text-black dark:text-white">
+                {title}
+            </div>
+            {date && <div class="animate text-sm opacity-75">{date}</div>}
+            <article class="animate prose dark:prose-invert">
+                <Content />
+            </article>
+        </div>
+    </Container>
 </Layout>
-
-

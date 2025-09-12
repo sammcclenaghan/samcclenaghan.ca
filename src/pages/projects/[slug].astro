@@ -1,0 +1,103 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import Link from "@components/Link.astro";
+
+export async function getStaticPaths() {
+    const projects = await getCollection("projects");
+
+    return projects.map((project) => ({
+        params: { slug: project.slug },
+        props: { project },
+    }));
+}
+
+const { project } = Astro.props;
+
+// Render the markdown content for the project
+const { Content /*, headings */ } = await render(project);
+
+const {
+    title,
+    description,
+    date,
+    tech = [],
+    image,
+    isVideo = false,
+    repo,
+    url,
+} = project.data;
+
+const pageTitle = `${title} • Projects`;
+---
+
+<Layout>
+    <Container>
+        <div class="space-y-8">
+            <nav class="animate text-sm">
+                <Link href="/projects" aria-label="Back to all projects">
+                    ← All projects
+                </Link>
+            </nav>
+
+            {
+                image && (
+                    <div class="animate">
+                        {isVideo ? (
+                            <video
+                                src={image}
+                                controls
+                                playsinline
+                                class="rounded-lg border border-black/10 dark:border-white/10 w-full"
+                            />
+                        ) : (
+                            <img
+                                src={image}
+                                alt={`${title} preview`}
+                                loading="lazy"
+                                class="rounded-lg border border-black/10 dark:border-white/10 w-full"
+                            />
+                        )}
+                    </div>
+                )
+            }
+
+            <article class="prose dark:prose-invert animate">
+                <Content />
+            </article>
+
+            <footer
+                class="animate pt-6 border-t border-black/10 dark:border-white/10 space-y-4"
+            >
+                <div class="flex flex-wrap gap-4 text-sm">
+                    {
+                        repo && (
+                            <Link
+                                href={repo}
+                                external
+                                aria-label={`${title} repository`}
+                            >
+                                Source ↗
+                            </Link>
+                        )
+                    }
+                    {
+                        url && (
+                            <Link
+                                href={url}
+                                external
+                                aria-label={`${title} live site`}
+                            >
+                                Live site ↗
+                            </Link>
+                        )
+                    }
+                </div>
+                <div class="text-xs opacity-60">
+                    <Link href="/projects">Back to all projects</Link>
+                </div>
+            </footer>
+        </div>
+    </Container>
+</Layout>
