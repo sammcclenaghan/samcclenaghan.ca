@@ -1,25 +1,18 @@
 ---
 import Container from "@components/Container.astro";
-import Link from "@components/Link.astro";
+
+const pathname = Astro.url.pathname;
+const isHome = pathname === "/";
+const isBlog = pathname.startsWith("/misc");
+const isProjects = pathname.startsWith("/projects");
 ---
 
 <header>
     <Container>
-        <div class="flex flex-wrap gap-y-2 justify-between">
-            <Link href="/" underline={false}>
-                <div class="font-semibold">Portfolio</div>
-            </Link>
-            <nav class="flex gap-1">
-                <Link href="/work"> work </Link>
-                <span>
-                    {`/`}
-                </span>
-                <Link href="/projects"> projects </Link>
-                <span>
-                    {`/`}
-                </span>
-                <Link href="/misc"> misc </Link>
-            </nav>
-        </div>
+        <nav class="mt-8 flex gap-6 text-muted-foreground text-sm">
+            <a class={`transition-colors ${isHome ? "text-black dark:text-white" : "text-gray-400"}`} href="/">[h] home</a>
+            <a class={`transition-colors ${isBlog ? "text-black dark:text-white" : "text-gray-400"}`} href="/misc">[b] blog</a>
+            <a class={`transition-colors ${isProjects ? "text-black dark:text-white" : "text-gray-400"}`} href="/projects">[p] projects</a>
+        </nav>
     </Container>
 </header>

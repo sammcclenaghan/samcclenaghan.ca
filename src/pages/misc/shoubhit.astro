@@ -1,0 +1,81 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import Link from "@components/Link.astro";
+---
+
+<Layout>
+    <Container>
+        <div class="space-y-8">
+            <div class="space-y-3">
+                <h2 class="text-2xl font-semibold text-black dark:text-white">
+                    shoubhit dash
+                </h2>
+                <div class="space-y-1 text-sm">
+                    <div class="flex items-center gap-2">
+                        <span>📍</span>
+                        <span>chennai, india</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span>💼</span>
+                        <span>co-founder and cto @ mocha</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6 leading-relaxed">
+                <p>
+                    <span class="italic">Building things and solving problems.</span>
+                    I'm a 20 y/o CS undergrad student who loves language design,
+                    theoretical computer science and living on the terminal. If
+                    I'm not coding, I'm probably doing cardistry, watching movies
+                    or obsessing over mechanical keyboards.
+                </p>
+                <p>
+                    In the past I've developed AI-native email clients and workflow
+                    automation tools.
+                </p>
+            </div>
+
+            <div class="space-y-6">
+                <div class="flex items-center gap-2">
+                    <span class="text-orange-500">*</span>
+                    <span class="font-semibold text-black dark:text-white">work</span>
+                </div>
+
+                <section class="space-y-8">
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-black dark:text-white">mocha</h3>
+                        <div class="text-sm opacity-75">co-founder and cto (jul 2025 - present)</div>
+                        <div class="text-sm opacity-80">
+                            building an ai native email client designed for speed and ease of use
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-black dark:text-white">ENS labs</h3>
+                        <div class="text-sm opacity-75">software engineer (feb 2025 - jul 2025)</div>
+                        <div class="text-sm opacity-80">
+                            helped migrate ensjs to namochain and optimized ci for the manager app
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-black dark:text-white">leapflow</h3>
+                        <div class="text-sm opacity-75">co-founder and cto (may 2024 - jun 2025)</div>
+                        <div class="text-sm opacity-80">
+                            built ai-native email clients and workflow automation tools
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="pt-4 text-sm opacity-70">
+                <span>inspired by </span>
+                <Link href="https://shoubhitdas.com" external>shoubhit's site</Link>
+            </div>
+        </div>
+    </Container>
+</Layout>
+
+
